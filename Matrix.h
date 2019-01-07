@@ -9,6 +9,7 @@
 
 #include <vector>
 #include <exception>
+#include <iostream>
 
 using std::vector;
 
@@ -66,6 +67,30 @@ class Matrix
         }
         Matrix result(data - other.data);
         return result;
+    }
+
+    P &operator()(unsigned int rows, unsigned int cols)
+    {
+        return data[(rows + 1) * cols];
+    }
+
+    bool isSquareMatrix()
+    {
+        return cols == rows;
+    }
+
+
+    friend std::ostream &operator<<(std::ostream &output, Matrix &matrix)
+    {
+        for (unsigned int i = 0; i < matrix.rows; ++i)
+        {
+            for (unsigned int j = 0; j < matrix.cols; ++j)
+            {
+                output << matrix(i, j) << '\t';
+            }
+            output << std::endl;
+        }
+        return output;
     }
 
 private:
