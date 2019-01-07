@@ -2,6 +2,10 @@
 // Created by avichay t on 1/7/19.
 //
 
+
+//todo destructor
+//todo comments
+
 #ifndef CPP_03_MATRIX_H
 #define CPP_03_MATRIX_H
 
@@ -14,6 +18,8 @@
 using std::vector;
 
 
+
+
 template<class P>
 class Matrix
 {
@@ -22,13 +28,13 @@ class Matrix
 
     }
 
-    Matrix(unsigned int rows, unsigned int cols) : data(rows * cols), rows(rows), cols(cols)
+    Matrix(unsigned int rows, unsigned int cols) : _data(rows * cols), _rows(rows), _cols(cols)
     {
 
     }
 
-    Matrix(unsigned int rows, unsigned int cols, const vector<P> &cells) : data(rows * cols, cells), rows(rows),
-                                                                           cols(cols)
+    Matrix(unsigned int rows, unsigned int cols, const vector<P> &cells) : _data(rows * cols, cells), _rows(rows),
+                                                                           _cols(cols)
     {
 
     }
@@ -40,7 +46,7 @@ class Matrix
 
     bool operator==(const Matrix &other)
     {
-        return data == other.data;
+        return _data == other._data;
     }
 
     bool operator!=(const Matrix &other)
@@ -55,7 +61,7 @@ class Matrix
         {
             throw std::invalid_argument(ARITHMETIC_DIMENSIONS_ERROR_MESSAGE);
         }
-        Matrix result(data + other.data);
+        Matrix result(_data + other._data);
         return result;
     }
 
@@ -65,26 +71,26 @@ class Matrix
         {
             throw std::invalid_argument(ARITHMETIC_DIMENSIONS_ERROR_MESSAGE);
         }
-        Matrix result(data - other.data);
+        Matrix result(_data - other._data);
         return result;
     }
 
     P &operator()(unsigned int rows, unsigned int cols)
     {
-        return data[(rows + 1) * cols];
+        return _data[(rows + 1) * cols];
     }
 
     bool isSquareMatrix()
     {
-        return cols == rows;
+        return _cols == _rows;
     }
 
 
     friend std::ostream &operator<<(std::ostream &output, Matrix &matrix)
     {
-        for (unsigned int i = 0; i < matrix.rows; ++i)
+        for (unsigned int i = 0; i < matrix._rows; ++i)
         {
-            for (unsigned int j = 0; j < matrix.cols; ++j)
+            for (unsigned int j = 0; j < matrix._cols; ++j)
             {
                 output << matrix(i, j) << '\t';
             }
@@ -93,13 +99,24 @@ class Matrix
         return output;
     }
 
+    int rows()
+    {
+        return rows;
+    }
+
+    int cols()
+    {
+        return cols;
+    }
+
+
 private:
-    vector<P> data;
-    int rows, cols;
+    vector<P> _data;
+    int _rows, _cols;
 
     bool sameDimensions(const Matrix &other)
     {
-        return cols == other.cols && rows == other.rows;
+        return _cols == other._cols && _rows == other._rows;
     }
 };
 
