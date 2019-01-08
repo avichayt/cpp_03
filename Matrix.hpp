@@ -1,8 +1,3 @@
-//
-// Created by avichay t on 1/7/19.
-//
-
-
 //todo destructor
 //todo comments
 
@@ -10,14 +5,13 @@
 #define CPP_03_MATRIX_H
 
 #define ARITHMETIC_DIMENSIONS_ERROR_MESSAGE "Cannot perform arithmetic on matrices of different dimensions."
+#define TRANSPOSE_ON_NON_SQUARE_MATRIX_ERROR "Cannot perform transpose on non square matrix"
 
 #include <vector>
 #include <exception>
 #include <iostream>
 
 using std::vector;
-
-
 
 
 template<class P>
@@ -54,7 +48,6 @@ class Matrix
         return !(*this == other);
     }
 
-
     Matrix operator+(const Matrix &other)
     {
         if (!sameDimensions(other))
@@ -80,6 +73,11 @@ class Matrix
         return _data[(rows + 1) * cols];
     }
 
+    P operator()(unsigned int rows, unsigned int cols) const
+    {
+        return _data[(rows + 1) * cols];
+    }
+
     bool isSquareMatrix()
     {
         return _cols == _rows;
@@ -99,6 +97,12 @@ class Matrix
         return output;
     }
 
+    Matrix &operator=(const Matrix &other)
+    {
+        _data = other._data;
+        return *this;
+    }
+
     int rows()
     {
         return rows;
@@ -107,6 +111,33 @@ class Matrix
     int cols()
     {
         return cols;
+    }
+
+    void trans()
+    {
+        if (!isSquareMatrix())
+        {
+            throw std::invalid_argument(TRANSPOSE_ON_NON_SQUARE_MATRIX_ERROR);
+        }
+
+        Matrix<P> copyMatrix = *this;
+        for (unsigned int i = 0; i < rows(); ++i)
+        {
+            for (unsigned int j = 0; j < cols(); ++j)
+            {
+                (*this)(i, j) = copyMatrix(j, i);
+            }
+        }
+    }
+
+    typename vector<P>::iterator begin()
+    {
+        return _data.begin();
+    }
+
+    typename vector<P>::iterator end()
+    {
+        return _data.end();
     }
 
 
