@@ -52,6 +52,7 @@ public:
      * @param rows amount of rows
      * @param cols amount of cols
      * @param cells
+     * @throws invalid argument if dimensions do not fit.
      */
     Matrix(unsigned int rows, unsigned int cols, const vector<P> &cells) : Matrix(rows, cols)
     {
@@ -62,17 +63,36 @@ public:
         _data = cells;
     }
 
+    Matrix(const Matrix &other) : Matrix(other.rows(), other.cols(), other._data)
+    {}
+
+    /**
+     * equality operator overload
+     * @param other other matrix
+     * @return is equal
+     */
     bool operator==(const Matrix &other) const
     {
 
         return _data == other._data && rows() == other.rows() && cols() == other.cols();
     }
 
+    /**
+     * in equality operator overload
+     * @param other other matrix to check
+     * @return is not equal to other
+     */
     bool operator!=(const Matrix &other) const
     {
         return !(*this == other);
     }
 
+    /**
+     * plus operator overload
+     * @param other other matrix
+     * @throws invalid argument if not in the right dimensions
+     * @return arithmetic result
+     */
     Matrix operator+(const Matrix &other) const
     {
         if (!sameDimensions(other))
@@ -88,6 +108,12 @@ public:
         return result;
     }
 
+    /**
+     * minus operator overload
+     * @param other other matrix
+     * @throws invalid argument if not in the right dimensions
+     * @return arithmetic result
+     */
     Matrix operator-(const Matrix &other) const
     {
         if (!sameDimensions(other))
@@ -103,6 +129,12 @@ public:
         return result;
     }
 
+    /**
+     * mult operator overload
+     * @param other other matrix
+     * @throws invalid argument if not in the right dimensions
+     * @return result of mult
+     */
     Matrix operator*(const Matrix &other) const
     {
         if (cols() != other.rows())
@@ -127,15 +159,29 @@ public:
         return result;
     }
 
+    /**
+     * set item by index with parenthesis operator
+     * @param rows row number
+     * @param cols cols number
+     * @throws out of range if indexes out of range
+     * @return item
+     */
     P &operator()(unsigned int rows, unsigned int cols)
     {
-        if (rows < 0 || rows >= _rows || cols < 0 || cols >= _cols)
+        if (rows >= _rows || cols >= _cols)
         {
             throw std::out_of_range(INDEX_OUT_OF_BOUNDS_MESSAGE);
         }
         return _data[(rows * _cols) + cols];
     }
 
+    /**
+     * get item by index with parenthesis operator
+     * @param rows row number
+     * @param cols cols number
+     * @throws out of range if indexes out of range
+     * @return item
+     */
     P operator()(unsigned int rows, unsigned int cols) const
     {
         if (rows < 0 || rows >= _rows || cols < 0 || cols >= _cols)
@@ -145,12 +191,22 @@ public:
         return _data[(rows * _cols) + cols];
     }
 
+    /**
+     * check if matrix is square
+     * @return is square
+     */
     bool isSquareMatrix() const
     {
         return _cols == _rows;
     }
 
 
+    /**
+     * print matrix to stream
+     * @param output output stream
+     * @param matrix matrix to print
+     * @return the stream
+     */
     friend std::ostream &operator<<(std::ostream &output, const Matrix &matrix)
     {
         for (unsigned int i = 0; i < matrix._rows; ++i)
@@ -164,34 +220,60 @@ public:
         return output;
     }
 
+    /**
+     * equals operator
+     * @param other other matrix to get equal to
+     * @return this matrix
+     */
     Matrix &operator=(const Matrix &other)
     {
         _data.resize(other.cols() * other.rows());
         _data = other._data;
+        _data.shrink_to_fit();
         _rows = other.rows();
         _cols = other.cols();
         return *this;
     }
 
+    /**
+     * get rows of matrix
+     * @return amount of rows
+     */
     unsigned int rows() const
     {
         return _rows;
     }
 
+    /**
+     * get amount of cols this matrix has
+     * @return amount of cols
+     */
     unsigned int cols() const
     {
         return _cols;
     }
 
+    /**
+     * perform transpose on matrix
+     * @return transposed matrix
+     */
     Matrix trans();
 
     typedef typename vector<P>::const_iterator const_iterator;
 
+    /**
+     * get begin iterator
+     * @return iterator of first item
+     */
     const_iterator begin() const
     {
         return _data.cbegin();
     }
 
+    /**
+     * get end iterator
+     * @return iterator of end item
+     */
     const_iterator end() const
     {
         return _data.cend();
@@ -199,15 +281,31 @@ public:
 
 
 private:
+    /**
+     * inner data vector
+     */
     vector<P> _data;
+    /**
+     * amount of rows and cols the matrix has
+     */
     unsigned int _rows, _cols;
 
+    /**
+     * check if two matrices are of same dimensions.
+     * @param other
+     * @return
+     */
     bool sameDimensions(const Matrix &other) const
     {
         return _cols == other._cols && _rows == other._rows;
     }
 };
 
+/**
+ * perform transpose on complex matrix
+ * @throws invalid argument if non square
+ * @return transposed matrix
+ */
 template<>
 inline
 Matrix<Complex> Matrix<Complex>::trans()
@@ -229,6 +327,11 @@ Matrix<Complex> Matrix<Complex>::trans()
     return copyMatrix;
 }
 
+/**
+ * perform transpose on complex matrix
+ * @throws invalid argument if non square
+ * @return transposed matrix
+ */
 template<class P>
 Matrix<P> Matrix<P>::trans()
 {
