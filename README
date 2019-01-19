@@ -1,0 +1,23 @@
+size = 500:
+    eigen
+          mult 6.1e-06
+          add  1.1e-06
+    matlib
+          mult 1.8948
+          add  0.0030405
+
+size = 50:
+    eigen
+          mult 2.6e-06
+          add  8e-07
+    matlib
+          mult 0.0024134
+          add  2.61e-05
+
+Answers:
+The Eigen Library is superior :(.
+Both are faster when manipulating 50 size vs 500 size.
+Both do better when adding vs when multiplying, because adding is o(N^2) vs multiplying which
+is at least O(N^2.3). Eigen probably uses much better algorithms than the O(N^3) we use.
+And last, the differences between the data sets shouldn't be that a change, but can make
+a difference if multiplying random numbers takes more time.

@@ -54,7 +54,6 @@ double toc()
 int main(int n)
 {
 
-
     cout << SIZE_MESSAGE << n << endl;
 
     MatrixXd m1 = MatrixXd::Random(n, n);
@@ -71,7 +70,7 @@ int main(int n)
     cout << EIGEN_ADD_MESSAGE << toc() << endl;
 
     vector<int> onesVector((unsigned long) (n * n), 1);
-    Matrix<int> onesMatrix(n, n, onesVector);
+    Matrix<int> onesMatrix((unsigned int) n, (unsigned int) n, onesVector);
 
 
     tic();
